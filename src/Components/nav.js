@@ -30,10 +30,10 @@ export default class nav extends Component {
                 }).catch(() => {
             });
 
-            // const user = cookie.get("myCookie");
-            // this.setState({
-            //     user: user
-            // })
+            const user = cookie.get("myCookie");
+            this.setState({
+                user: user
+            })
          
     }
 
