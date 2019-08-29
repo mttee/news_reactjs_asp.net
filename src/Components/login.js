@@ -119,9 +119,12 @@ export default class login extends Component {
 
 const form_login = {
     width: '500px',
-    height: '300px',
+    height: '350px',
     position: 'fixed',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
+    padding: "40px",
+    background: "white",
+    borderRadius: "20px"
 };

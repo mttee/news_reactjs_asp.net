@@ -3,10 +3,14 @@ import Cookies from 'universal-cookie';
 //import Menu from '../nav'
 import {Item, Label, Grid, Button, Image, Icon} from 'semantic-ui-react'
 import { async } from 'q';
+import { tsConstructorType } from '@babel/types';
 
 const axios = require('axios');
 
 const cookie  = new Cookies();
+
+
+
 
 export default class index extends Component {
     constructor(props){
@@ -24,33 +28,90 @@ export default class index extends Component {
             method: 'get',
             url: 'https://localhost:44394/api/Post',
           })
-            .then((response) => {
+            .then(async(response) => {
               this.setState({
                   Posts: response.data
               })
-            });  
+
+            //   console.log(response.data)
+
+              var arr = [];
+            response.data.map(async (p) => {
+                
+                await axios({
+                     method: 'get',
+                         url: 'https://localhost:44394/api/account/'+p.postAuthorIdForeignKey,
+                       }).then((a) => {
+
+                        //console.log(arr)
+                       // console.log(a.data.user_Id)
+                            // if(arr.length === 0){
+                            //     arr.push(a.data) 
+                            // }
+                            // else{
+                            //     arr.forEach(ar => {
+                            //         console.log(ar.user_Id)
+                            //         if(ar.user_Id !== a.data.user_Id){
+                                        // console.log(ar.user_Id)
+                                        // console.log(a.data.user_Id)
+                                        arr.push(a.data)
+                            //         }
+                            //     })
+                            // }            
+                           
+                       })
+                       var outputArray=[]
+                       var start = false; 
+                       var count = 0; 
+                       for (var j = 0; j < arr.length; j++) { 
+                        for (var k = 0; k < outputArray.length; k++) { 
+                            if ( arr.user_Id[j] == outputArray.user_Id[k] ) { 
+                                start = true; 
+                            } 
+                        } 
+                        count++; 
+                        if (count == 1 && start == false) { 
+                            outputArray.push(arr.user_Id[j]); 
+                        } 
+                        start = false; 
+                        count = 0; 
+                    } 
+                     
+                       console.log(outputArray)
+                       this.setState({
+                            author: outputArray
+                        })
+             }); 
+             
+            
+            
+        
+ 
+        })
     }
 
+ 
 
     //get list user
-    getAuthor = (id) => {
-        axios({
-            method: 'get',
-            url: 'https://localhost:44394/api/account/'+id,
-          }).then((result) => {
-              console.log(result);
-              
-            this.setState({
-                author: result
-            })
-          })
-        
-       
-    }
+    // getAuthor =  async(id) => {
+    //     var author =  await axios({
+    //         method: 'get',
+    //         url: 'https://localhost:44394/api/account/'+id,
+    //       })
+    //       this.setState({
+    //           author: author.data.name
+    //       })
+
+    //       console.log(author.data);
+          
+    //    return author.data;
+    // }
+    
 
     render() {
+        console.log(this.state.Posts)
         console.log(this.state.author)
-        // this.getAuthor(1).then((result) => {return(result)})
+        //this.getAuthor(1).then((result) => {return(result)})
         return (
             <div>
                 
@@ -102,8 +163,14 @@ export default class index extends Component {
                                             Chi tiết
                                             <Icon name='right chevron' />
                                         </Button>
-                                        {this.getAuthor.bind(2)}
-                                            <Label>Tác giả : {this.state.author}</Label>
+                                        {/* {this.getAuthor(1)} */}
+                                        {this.state.author.map((author) =>{
+                                            if(author.user_Id === p.postAuthorIdForeignKey){
+                                                return(<Label>Tác giả :  {author.name}</Label>)
+                                            }
+                                        })}
+                                         {/* {this.getAuthor(p.postAuthorIdForeignKey)}
+                                        <Label>Tác giả :  {this.state.author}</Label> */}
                                         </Item.Extra>
                                     </Item.Content>
                                 </Item>
